@@ -7,3 +7,6 @@ Bot Code Bebo, more formally called Email Bot, is a program that will send as ma
 DESCRIPTION ===================
 
 It is developed in Python by Harper Bledsoe, also known as Zeb Games or ZLabZ. Using 2 different Gmail accounts, it will send as many emails as possible until Google bans it. Once the first account gets banned, the second logs in and keeps sending the emails.
+
+NOTICE ===========
+If you want to use this code, you will need to put your own gmail stuff at lines: 24, 25, 28, 29 and 61
