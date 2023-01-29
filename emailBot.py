@@ -1,14 +1,15 @@
-# THIS BOT IS CREATED BY ZEB GAMES (ZEB152) ON MARCH 9, 2022
-#
-# NOTE: THIS BOT IS MADE FOR ONLY FUN PURPOSES, AND SHOULD NOT BE USED TO HARM ANYONE IN ANYWAY.
-# I DO NOT PROMOTE ANY MALICIOUS ACTIVITY USED WITH THIS. PLEASE DO NOT USE IT IF YOU ARE PLANNING TO HARM ANYONE.
-#
-#
+### Created by Zeb Games (Zeb152) March 9, 2022
+### 
+#This is a simple email bot that sends a ton of emails to the recipient. In May, 2022, Google recently removed the 3rd party login services. To get this code to work, you will need to enable 2 factor authentication and set up an app   password. If you need help setting up your gmail account to work for this script, see this -> https://www.letscodemore.com/blog/smtplib-smtpauthenticationerror-username-and-password-not-accepted/
+###
+### NOTE:  THIS BOT IS MADE FOR ONLY FUN PURPOSES, AND SHOULD NOT BE USED TO HARM ANYONE IN ANYWAY.
+#  I DO NOT PROMOTE ANY MALICIOUS ACTIVITY USED WITH THIS. PLEASE DO NOT USE IT IF YOU ARE PLANNING TO HARM ANYONE.
+###
 
 
+#Import the needed libraries
 import smtplib
 from time import sleep
-
 
 
 #VARIABLES =============================================
@@ -19,16 +20,18 @@ smtp_server = "smtp.gmail.com"
 #find port
 port = 587
 
-#login info> CHANGE IF SENDING THE CODE TO SOMEONE
-sender_email = "yourmainemail@gmail.com"
-password = 'yourmainpassword'
+#login info> CHANGE FOR YOUR OWN PERSONAL NEEDS
+sender_email = "FIRSTEMAILACCOUNT@gmail.com"
+password = 'UNIQUE 16 DIGIT CODE HERE' #that email's 16 digit code
 
 #BACKUP EMAIL FOR LOGIN
-backup_email = 'yoursecondemail@gmail.com'
-backup_password = 'yoursecondemailpassword'
+backup_email = 'SECONDEMAILACCOUNT@gmail.com'
+backup_password = 'UNIQUE 16 DIGIT CODE HERE' #that email's 16 digit code
 
 #Count the amount of emails that were sent
 amount_sent = 0
+
+botEmail = 0
 
 #we will use this to check if this is the error
 errorUnable = ['Daily user sending quota exceeded.']
@@ -43,11 +46,19 @@ server = smtplib.SMTP(smtp_server,port)
 #MAIN SCRIPT ==========================================
 
 #Get Email address input for the reciever
-userInput = input('Reciever email> ')
+userInput = input('Reciever Email (if it is for gmail, you don\'t need to add @gmail.com)> ')
 
-#I added this in case you wanted to just type n to input a stored email to send it to
-if userInput == 'n':
-	receiver_email = 'commonemailreceiver@gmail.com'
+#check to see if @gmail.com is NOT in the reciever email input - if not, add it
+gmailCheck = "@gmail.com"
+
+for word in userInput:
+	if word not in gmailCheck:
+		userInput = userInput + "@gmail.com"
+
+
+#commonly used email - type 'd' to use it - saved -- CHANGE IF YOU WANT A DEFAULT RECIEVER
+if userInput == 'default':
+	receiver_email = 'YOURDEFAULTEMAIL@gmail.com'
 
 else:
 	receiver_email = userInput
@@ -62,10 +73,6 @@ message = 'Hello! This is Bebo Bot! I am programmed in Python to send emails! ME
 amount = input('Amount of emails to send> ')
 
 
-
-print('Sending...')
-
-botEmail = 0
 
 #END OF MAIN SCRIPT =========================================
 
@@ -88,6 +95,7 @@ def send():
     #we are using try so we can see if an error pops up
     try:
       
+      message = message + '  '
       #seeing if the 1st or 2nd email is signed in
       if botEmail == 0:
       	sendMessage()
@@ -98,40 +106,44 @@ def send():
       amount_sent = amount_sent + 1
       
       #append the random digit to the message
-      message = message + ''
       
       #Print the message of the email with the number of which one it is (ex: 2. MESSAGE> Hello World)
-      print(str(amount_sent) + '. MESSAGE> ' + message)
+      print(str(amount_sent) + '. MESSAGE> ' + message + '} SENT')
       
     #check if errors
     except Exception as e:
-      
+    	
     	#looking at the words in errorUnable
       for word in errorUnable:
-        
       	#If the words are in the error
         if word in str(e):
-          
-        	#turn the bot email to the alt
-          botEmail = 1
-          
-          #print error
-          print('Unable to send, sending limit on Gmail met. Logging in with alt bot account. ')
           
           #calculating the amount of emails to send left
           amount = int(amount) - int(amount_sent)
           
-          #connect the the alt account server
-          serverConnect_other()
+          #check to see which account is logged in
+          if botEmail == 0:
+          	email_of_bot_string = 'main'
+          if botEmail == 1:
+          	email_of_bot_string = 'alt'
           
-          #send message
-          send()
+          #print error and ask which account
+          altMain = input('Unable to send, sending limit on Gmail met on ' + email_of_bot_string + ' account. Log in with alt account or main? (a/m)> ')
+          
+          if altMain == 'a':
+          	botEmail = 1
+          	serverConnect_other()
+          	send()
+          if altMain == 'm':
+          	botEmail = 0
+          	serverConnect()
+          	send()
           
         #if the error isnt what is shown above, move on
         else:
         	#continue out of for loop
           break
-          
+      
       #print error
       print('ERROR FROM CODE> <' + str(e) + '>')
       
@@ -181,7 +193,7 @@ def serverConnect_other():
 
 		#Login to SMTPLIB Gmail account
 		server.login(backup_email, backup_password)
-		print('Logged in with alternate bot email.')
+		print('Logged in with alternate account.')
 		
 	except Exception as e:
 		print(e)
@@ -203,7 +215,7 @@ def serverConnect():
 
 		#Login to SMTPLIB Gmail account
 		server.login(sender_email, password)
-		print('Logged in')
+		print('Logged in with main account.')
 		
 	except Exception as e:
 		print(e)
@@ -216,6 +228,9 @@ def serverConnect():
 
 #Connect to the SMTP Server
 serverConnect()
+
+#notify user on what is happening
+print('Sending...')
 
 #Call the sending function
 send()
@@ -232,8 +247,6 @@ print('Sent ' + str(amount) + ' emails sucessfully.')
 
 #Exit the script
 exit()
-
-
 
 
 
